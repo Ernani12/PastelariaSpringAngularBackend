@@ -5,11 +5,15 @@ import com.youtube.ecommerce.dao.UserDao;
 import com.youtube.ecommerce.entity.Role;
 import com.youtube.ecommerce.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
+import org.springframework.security.core.Authentication;
+
 
 @Service
 public class UserService {
@@ -36,8 +40,8 @@ public class UserService {
         roleDao.save(userRole);
 
         User adminUser = new User();
-        adminUser.setUserName("admin123");
-        adminUser.setUserPassword(getEncodedPassword("admin@pass"));
+        adminUser.setUserName("er");
+        adminUser.setUserPassword(getEncodedPassword("123"));
         adminUser.setUserFirstName("admin");
         adminUser.setUserLastName("admin");
         Set<Role> adminRoles = new HashSet<>();
@@ -46,10 +50,10 @@ public class UserService {
         userDao.save(adminUser);
 
         User user = new User();
-        user.setUserName("raj123");
-        user.setUserPassword(getEncodedPassword("raj@123"));
-        user.setUserFirstName("raj");
-        user.setUserLastName("sharma");
+        user.setUserName("user");
+        user.setUserPassword(getEncodedPassword("111"));
+        user.setUserFirstName("batista");
+        user.setUserLastName("serafim");
         Set<Role> userRoles = new HashSet<>();
         userRoles.add(userRole);
         user.setRole(userRoles);
@@ -69,4 +73,19 @@ public class UserService {
     public String getEncodedPassword(String password) {
         return passwordEncoder.encode(password);
     }
+
+    public List<User> getUsers(){
+        return userDao.findAll();
+    }
+
+    
+    public String getCurrentUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            return userDetails.getUsername();
+        }
+        return null;
+    }
+ 
 }

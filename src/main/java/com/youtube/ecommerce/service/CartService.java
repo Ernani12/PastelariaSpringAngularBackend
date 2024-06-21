@@ -1,6 +1,6 @@
 package com.youtube.ecommerce.service;
 
-import com.youtube.ecommerce.configuration.JwtRequestFilter;
+import com.youtube.ecommerce.controller.UserController;
 import com.youtube.ecommerce.dao.CartDao;
 import com.youtube.ecommerce.dao.ProductDao;
 import com.youtube.ecommerce.dao.UserDao;
@@ -23,6 +23,9 @@ public class CartService {
     private ProductDao productDao;
 
     @Autowired
+    private UserController uc;
+
+    @Autowired
     private UserDao userDao;
 
     public void deleteCartItem(Integer cartId) {
@@ -32,7 +35,7 @@ public class CartService {
     public Cart addToCart(Integer productId) {
         Product product = productDao.findById(productId).get();
 
-        String username = JwtRequestFilter.CURRENT_USER;
+        String username = uc.getCurrentUsername();
 
         User user = null;
         if(username != null) {
@@ -55,7 +58,7 @@ public class CartService {
     }
 
     public List<Cart> getCartDetails() {
-        String username = JwtRequestFilter.CURRENT_USER;
+        String username = uc.getCurrentUsername();
         User user = userDao.findById(username).get();
         return cartDao.findByUser(user);
     }
