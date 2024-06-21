@@ -1,6 +1,6 @@
 package com.youtube.ecommerce.service;
 
-import com.youtube.ecommerce.configuration.JwtRequestFilter;
+import com.youtube.ecommerce.controller.UserController;
 import com.youtube.ecommerce.dao.CartDao;
 import com.youtube.ecommerce.dao.ProductDao;
 import com.youtube.ecommerce.dao.UserDao;
@@ -24,6 +24,9 @@ public class ProductService {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private UserController uc;
 
     @Autowired
     private CartDao cartDao;
@@ -63,7 +66,7 @@ public class ProductService {
             return list;
         } else {
             // we are going to checkout entire cart
-            String username = JwtRequestFilter.CURRENT_USER;
+            String username = uc.getCurrentUsername();
             User user = userDao.findById(username).get();
             List<Cart> carts = cartDao.findByUser(user);
 

@@ -2,7 +2,7 @@ package com.youtube.ecommerce.service;
 
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
-import com.youtube.ecommerce.configuration.JwtRequestFilter;
+import com.youtube.ecommerce.controller.UserController;
 import com.youtube.ecommerce.dao.CartDao;
 import com.youtube.ecommerce.dao.OrderDetailDao;
 import com.youtube.ecommerce.dao.ProductDao;
@@ -34,6 +34,9 @@ public class OrderDetailService {
     private UserDao userDao;
 
     @Autowired
+    private UserController uc;
+
+    @Autowired
     private CartDao cartDao;
 
     public List<OrderDetail> getAllOrderDetails(String status) {
@@ -54,7 +57,7 @@ public class OrderDetailService {
     }
 
     public List<OrderDetail> getOrderDetails() {
-        String currentUser = JwtRequestFilter.CURRENT_USER;
+        String currentUser = uc.getCurrentUsername();
         User user = userDao.findById(currentUser).get();
 
         return orderDetailDao.findByUser(user);
@@ -66,7 +69,7 @@ public class OrderDetailService {
         for (OrderProductQuantity o: productQuantityList) {
             Product product = productDao.findById(o.getProductId()).get();
 
-            String currentUser = JwtRequestFilter.CURRENT_USER;
+            String currentUser = uc.getCurrentUsername() ;
             User user = userDao.findById(currentUser).get();
 
             OrderDetail orderDetail = new OrderDetail(
